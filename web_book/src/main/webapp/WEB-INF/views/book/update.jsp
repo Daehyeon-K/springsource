@@ -5,7 +5,7 @@
 	<%-- 화면 위치 --%>
 	<h1>도서 정보 입력</h1>
 
-	<form action="update.do" method="post">
+	<form action="" method="post">
 		<div class="form-group row">
 			<label for="code" class="col-sm-2 col-form-label">Code</label>
 			<div class = "col-sm-8">
@@ -25,6 +25,14 @@
 			</div>
 		</div>
 	</form>
+	
+<script src="/resources/js/update.js"></script>
+<script>
+	let error = ${error};
+	if(error!=''){
+		alert(error);
+	}
+</script>
 	
 <%@ include file = "../layout/footer.jsp" %>
     
