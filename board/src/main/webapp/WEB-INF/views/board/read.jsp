@@ -44,6 +44,10 @@
 <%--modify 버튼 클릭 시 이동할 폼 --%>
 <form action="/board/modify" id="operForm">
 	<input type="hidden" value="${dto.bno}" name="bno" />
+	<input type="hidden" value="${cri.pageNum}" name="pageNum" />
+	<input type="hidden" value="${cri.amount}" name="amount" />
+	<input type="hidden" value="${cri.type}" name="type" />
+	<input type="hidden" value="${cri.keyword}" name="keyword" />
 </form>
 
 <script src="/resources/js/read.js"></script>

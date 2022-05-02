@@ -33,7 +33,7 @@ public class BoardController {
 		List<BoardDTO> list = service.getList(cri);
 		
 		// 전체 게시물 개수
-		int total = service.getTotalCnt();
+		int total = service.getTotalCnt(cri);
 		
 		model.addAttribute("pageDto", new PageDTO(cri, total));
 		model.addAttribute("list", list);
@@ -47,22 +47,32 @@ public class BoardController {
 	
 	// post
 	@PostMapping("/register")
-	public String registerPost(BoardDTO insertDto, RedirectAttributes rttr) {
+	public String registerPost(BoardDTO insertDto, Criteria cri, RedirectAttributes rttr) {
 		log.info("register "+insertDto);
+		log.info("register -cri "+cri);
 		if(service.insert(insertDto)){ //===
 			log.info("등록 성공");
+			rttr.addAttribute("pageNum", cri.getPageNum());
+			rttr.addAttribute("amount", cri.getAmount());
+			rttr.addAttribute("type", cri.getType());
+			rttr.addAttribute("keyword", cri.getKeyword());
 			rttr.addFlashAttribute("result", insertDto.getBno());
 			return "redirect:/board/list";
 		}
 		log.info("등록 실패");
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		return "redirect:/board/register";
 	}
 	
 	// /board/read + bno
 	// bno에 해당하는 게시물 읽어온 후 read.jsp 보여주기
 	@GetMapping({"/read", "/modify"})
-	public void readGet(int bno, Model model) {
+	public void readGet(int bno, @ModelAttribute("cri") Criteria cri, Model model) {
 		log.info("게시물 요청 "+bno);
+		log.info("게시물 요청 "+cri);
 		
 		BoardDTO dto = service.getRow(bno);
 		model.addAttribute("dto", dto);
@@ -70,30 +80,48 @@ public class BoardController {
 	
 	// 수정 성공 시 수정된 게시물 보여주기 수정내용 /board/read로 넘기기 post해서
 	@PostMapping("/modify")
-	public String modify(BoardDTO dto, RedirectAttributes rttr) {
+	public String modify(BoardDTO dto, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("수정 요청 "+dto);
+		log.info("수정 요청 -cri "+cri);
 		
 		if(service.update(dto)) {
 			log.info("수정 성공");
 			rttr.addAttribute("bno", dto.getBno());
+			rttr.addAttribute("pageNum", cri.getPageNum());
+			rttr.addAttribute("amount", cri.getAmount());
+			rttr.addAttribute("type", cri.getType());
+			rttr.addAttribute("keyword", cri.getKeyword());
 			return "redirect:/board/read";
 		}
 		
 		log.info("수정 실패");
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		return "/board/modify";
 	}
 	
 	// /board/remove + bno
 	// 성공시 list 보여주기
 	@GetMapping("/remove")
-	public String delete(int bno, RedirectAttributes rttr) {
+	public String delete(int bno, Criteria cri, RedirectAttributes rttr) {
 		log.info("게시물 삭제 요청 "+bno);
+		log.info("게시물 삭제 요청 -cri "+cri);
 		if(service.delete(bno)) {
 			log.info("삭제 성공");
+			rttr.addAttribute("pageNum", cri.getPageNum());
+			rttr.addAttribute("amount", cri.getAmount());
+			rttr.addAttribute("type", cri.getType());
+			rttr.addAttribute("keyword", cri.getKeyword());
 			rttr.addFlashAttribute("result", "success");
 			return "redirect:/board/list";
 		}
 		log.info("삭제 실패");
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		return "/board/modify";
 	}
 	

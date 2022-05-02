@@ -55,3 +55,20 @@ from (select /*+INDEX_DESC(spring_board pk_spring_board)*/ rownum rn,bno,title,w
 	  from spring_board
 	  where rownum <=20)
 where rn > 10;
+
+-- 페이지 나누기 + 검색
+
+-- 타이틀, 모달
+-- pageNum=1&amount=10&type=T&keyword=모달
+
+select bno,title,writer,regdate,updatedate
+from (select /*+INDEX_DESC(spring_board pk_spring_board)*/ rownum rn,bno,title,writer,regdate,updatedate
+	  from spring_board
+	  where bno> 0 and (title like '%모달%') and rownum <=(1*30))
+where rn > (1-1)30;
+
+select bno,title,writer,regdate,updatedate
+from (select /*+INDEX_DESC(spring_board pk_spring_board)*/ rownum rn,bno,title,writer,regdate,updatedate
+	  from spring_board
+	  where bno> 0 and (title like '%모달%' or content like '%모달%') and rownum <=(1*30))
+where rn > (1-1)30;
