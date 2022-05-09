@@ -41,6 +41,25 @@
                 	</div>
                 </div>
             </div>   
+
+<%-- 파일 첨부 영역 --%>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading"><i class="fa fas fa-file"></i> 첨부파일</div>
+			<div class="panel-body">
+				<div class="uploadResult">
+					<ul><!-- 첨부파일 정보 --></ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bigPictureWrapper">
+	<div class="bigPicture"></div>
+</div>
+
 <%-- 댓글 리스트 영억 --%>
 <div class="row">
 	<div class="col-lg-12">
@@ -117,8 +136,9 @@
 	let bno = ${dto.bno};
 </script>
 
-<script src="/resources/js/read.js"></script>
+<script src="/resources/js/read.js?ver=1"></script>
 
 <script src="/resources/js/reply.js?ver=2"></script>
+<script src="/resources/js/upload.js?ver=1"></script>
 
 <%@include file="../includes/footer.jsp" %>       

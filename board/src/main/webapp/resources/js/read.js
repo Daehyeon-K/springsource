@@ -31,4 +31,16 @@ $(function(){
 	$(".btn-default").click(function(){
 		operForm.submit();
 	})
+	
+	// 첨부파일 가져오기 - 무조건 실행
+	$.getJSON({
+		url:'getAttachList',
+		data:{
+			bno:bno
+		},
+		success:function(data){
+			console.log(data);
+		}
+	})
+	
 })

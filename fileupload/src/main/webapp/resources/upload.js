@@ -50,15 +50,70 @@ $(function(){
 		$(result).each(function(idx,obj){
 			
 			if(obj.fileType){ // 이미지 파일
-				str += "<li>"+obj.fileName+"</li>";	
+				// 썸네일 이미지 보여주기
+				// 썸네일 이미지 경로
+				let fileCallPath = encodeURIComponent(obj.uploadPath+"\\s_"+obj.uuid+"_"+obj.fileName);
+				
+				// 원본 파일 이미지 경로
+				let oriPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
+				oriPath = oriPath.replace(new RegExp(/\\/g),"/");
+			
+				str += "<li><a href = \"javascript:showImage(\'"+oriPath+"\')\">"; // 역슬래시로 여러 쌍따옴표 나올 때 이것도 쌍따옴표로 해달라고 표시해주는 것 \", \' 홑따옴표도 마찬가지로
+				str += "<img src='/display?fileName="+fileCallPath+"'></a>";
+				str += "<div>"+obj.fileName+"<span data-file='"+fileCallPath+"' data-type='image'> X </span>";
+				str += "</div></li>";	
 				
 			}else{ // txt 파일
-				str += "<li><img src='/resources/img/attach.png'><div>"+obj.fileName+"</div></li>";	
+				
+				// 다운로드 경로
+				let fileCallPath = encodeURIComponent(obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName);
+			
+				str += "<li><a href='/download?fileName="+fileCallPath+"'>";
+				str += "<img src='/resources/img/attach.png'></a>";
+				str += "<div>"+obj.fileName+"<span data-file='"+fileCallPath+"' data-type='file'> X </span>";
+				str += "</div></li>";	
 			}
 		});
 		
 		uploadResult.append(str);
 	} // showUploadFile 종료
 	
+	// 첨부파일 삭제 (X 동작)
+	$(".uploadResult").on("click","span",function(){
+		// span 태그의 data- 속성 가져오기 (뒤에거를 data() 해서 괄호 안에 넣기)
+		let targetFile = $(this).data("file");
+		let type = $(this).data("type");
+		
+		// span의 태그가 속해있는 li 태그 가져오기
+		let targetLi = $(this).closest("li");
+		
+		$.ajax({
+			url:'/deleteFile',
+			data:{
+				fileName:targetFile,
+				type:type
+			},
+			type:'post',
+			success:function(result){
+				console.log(result);
+				// li 태그 제거
+				targetLi.remove();
+			}
+		})
+	})
+	
+	// 이미지 종료
+	$(".bigPictureWrapper").on("click",function(){
+		$(".bigPicture").animate({width:'0',height:'0'},1000);
+		setTimeout(function(){
+			$(".bigPictureWrapper").hide();
+		}, 1000);
+	})
 	
 })
+
+function showImage(fileCallPath){
+	$(".bigPictureWrapper").css("display","flex").show();
+	
+	$(".bigPicture").html("<img src='/display?fileName="+fileCallPath+"'>").animate({width:'100%',height:'100%'},1000);
+}
