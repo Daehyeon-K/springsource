@@ -142,7 +142,7 @@ public class UploadAjaxController {
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
 	
-	// 서버 파일 삭제
+	// 서버 파일 삭제 : X 버튼 클릭 시
 	@PostMapping("/deleteFile")
 	public ResponseEntity<String> deleteFile(String fileName, String type){
 		log.info("파일 삭제 요청 "+fileName+" "+type);

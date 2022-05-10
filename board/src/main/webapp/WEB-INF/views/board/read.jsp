@@ -137,7 +137,6 @@
 </script>
 
 <script src="/resources/js/read.js?ver=1"></script>
-
 <script src="/resources/js/reply.js?ver=2"></script>
 <script src="/resources/js/upload.js?ver=1"></script>
 

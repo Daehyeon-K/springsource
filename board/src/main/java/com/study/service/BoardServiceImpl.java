@@ -48,14 +48,33 @@ public class BoardServiceImpl implements BoardService {
 	public BoardDTO getRow(int bno) {
 		return mapper.read(bno);
 	}
-
+	
+	@Transactional
 	@Override
 	public boolean update(BoardDTO updateDto) {
+		
+		// 기존 첨부파일 삭제
+		attachMapper.deleteAll(updateDto.getBno());
+		
+		if(updateDto.getAttachList() != null && updateDto.getAttachList().size() > 0) {
+			for(AttachDTO attach:updateDto.getAttachList()) {
+				attach.setBno(updateDto.getBno());
+				attachMapper.insert(attach);
+			}
+		}
+		
 		return mapper.update(updateDto)==1?true:false;
 	}
-
+	
+	@Transactional
 	@Override
 	public boolean delete(int bno) {
+		// 글을 삭제하며 첨부파일 삭제
+		attachMapper.deleteAll(bno);
+		
+		// 글을 삭제하며 댓글 삭제
+		
+		
 		return mapper.delete(bno)==1?true:false;
 	}
 
