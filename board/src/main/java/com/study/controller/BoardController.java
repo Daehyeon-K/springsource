@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,12 +52,15 @@ public class BoardController {
 	}
 	
 	// /board/register 컨트롤러 작성
+	// isAuthenticated() : 인증된 사용자인 경우 true
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/register")
 	public void register() {
 		log.info("register 요청");
 	}
 	
 	// post
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/register")
 	public String registerPost(BoardDTO insertDto, Criteria cri, RedirectAttributes rttr) {
 		log.info("글 등록 요청 "+insertDto);
@@ -85,10 +89,11 @@ public class BoardController {
 	}
 	
 	// 수정 성공 시 수정된 게시물 보여주기 수정내용 /board/read로 넘기기 post해서
+	@PreAuthorize("principal.username == #updateDto.writer")
 	@PostMapping("/modify")
 	public String modify(BoardDTO dto, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
-		log.info("수정 요청 "+dto);
-		log.info("수정 요청 -cri "+cri);
+		log.info("게시물 수정 요청 "+dto);
+		log.info("게시물 수정 요청 -cri "+cri);
 		
 		service.update(dto);
 		
@@ -104,8 +109,9 @@ public class BoardController {
 	
 	// /board/remove + bno
 	// 성공시 list 보여주기
+	@PreAuthorize("principal.username == #writer")
 	@GetMapping("/remove")
-	public String delete(int bno, Criteria cri, RedirectAttributes rttr) {
+	public String delete(int bno, String writer, Criteria cri, RedirectAttributes rttr) {
 		log.info("게시물 삭제 요청 "+bno);
 		log.info("게시물 삭제 요청 -cri "+cri);
 		

@@ -37,10 +37,13 @@ $(function(){
 			type:'post',
 			processData:false,
 			contentType:false,
+			beforeSend:function(xhr){
+				xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+			},
 			data:formData,
 			dataType:'json',
 			success:function(result){
-				//console.log(result);
+				console.log(result);
 				$(":file").val(""); // 남는 파일명 제거
 				showUploadFile(result);
 			}

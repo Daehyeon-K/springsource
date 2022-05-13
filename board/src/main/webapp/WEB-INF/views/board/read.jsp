@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%@include file="../includes/header.jsp" %>
             <div class="row">
@@ -34,8 +35,17 @@
                 					<label>Writer</label>
                 					<input class="form-control" name="writer" readonly="readonly" value="${dto.writer}">                				
                 				</div>  
-                				<button type="button" class="btn btn-default">Modify</button>     			
-                				<button type="reset" class="btn btn-info">List</button>          			
+                				
+                				<sec:authentication property="principal" var="info"/>
+                				<sec:authorize access="isAuthenticated()">
+        	        				<c:if test="${info.username==dto.writer}">
+		                				<button type="button" class="btn btn-default">Modify</button>     
+	                				</c:if>
+                				</sec:authorize>
+                				
+                							
+                				<button type="reset" class="btn btn-info">List</button>      
+                				    			
                 			</form>
                 		</div>
                 	</div>
@@ -67,7 +77,12 @@
 			<div class="panel-heading">
 				<i class="fa fa-comments fa-fw"></i>
 				Reply
-				<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+				
+				<sec:authorize access="isAuthenticated()">
+					<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+				</sec:authorize>
+			
+			
 			</div>
 			<div class="panel-body">
 				<ul class="chat">
@@ -134,10 +149,21 @@
 <script>
 	// 현재 글 번호
 	let bno = ${dto.bno};
+	
+	// 로그인 사용자 가져오기
+	let replyer = null;
+	<sec:authorize access="isAuthenticated()">
+		replyer='<sec:authentication property="principal.username"/>';
+	</sec:authorize>
+	
+	// csrf 토큰
+	let csrfHeaderName = "${_csrf.headerName}";
+	let csrfTokenValue = "${_csrf.token}";
+	
 </script>
 
 <script src="/resources/js/read.js?ver=1"></script>
-<script src="/resources/js/reply.js?ver=3"></script>
+<script src="/resources/js/reply.js?ver=4"></script>
 <script src="/resources/js/upload.js?ver=1"></script>
 
 <%@include file="../includes/footer.jsp" %>       
